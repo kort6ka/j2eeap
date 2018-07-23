@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<link rel="stylesheet" type="text/css" href="${request.contextPath}/css/style.css" />
+	
+	<script type="text/javascript" src="${request.contextPath}/js/ace/ace.js"></script>
+	
+</h:head>
+
+
+<h:body>
+
+
+
+<p:layout style="min-width:400px;min-height:500px;">  
+	<p:layoutUnit position="center">  
+	
+	
+	<p:dataTable var="car" value="da1">
+		<p:column>
+			<f:facet name="header">
+				<h:outputText value="Task description" />
+			</f:facet>
+
+		</p:column>
+		<p:column>
+			<f:facet name="header">
+				<h:outputText value="jsEditor"/>
+			</f:facet>
+
+
+
+
+
+<h:form id="myForm">
+
+
+	
+	<!-- <input type="text" id="jsEditor" name="t1"/>
+	<input type="hidden" id="t" name="t" value="hello"/> -->
+	
+	<input type="text" id="jsEditor" name="jsEditor" value="" style="cursor: text"/>
+	<input name="cheese" type="hidden" class="inputext" value=""  style="cursor: text" id="cheese" />
+	
+	<input type="hidden" name="komutdosyasi" style="display: none;" />
+	
+	
+	<!-- <input name="chk_in" type="text" class="inputext" value=""  style="cursor: text" id="chk_in" />
+		 <input name="cheese" type="hidden" class="inputext" value="1"  style="cursor: text" id="cheese" />-->
+	
+	<p:commandButton value="Click here" actionListener="${editor.show()}"> </p:commandButton>
+	
+	
+	
+
+	
+</h:form>
+
+		</p:column>
+		<p:column>
+			<f:facet name="header">
+				<h:outputText value="Results" />
+			</f:facet>
+			<p:panel style="border: 1px solid #000000;" header="PrimeFaces Hello World Example">
+			<p:commandButton value="Click here" actionListener="${editor.use()}"> </p:commandButton>
+    		</p:panel>
+		</p:column>
+		
+	//more columns
+	</p:dataTable>
+	
+
+
+
+ 
+	</p:layoutUnit>  
+</p:layout> 
+
+
+<script> 
+	var e = ace.edit("jsEditor");
+	e.getSession().setMode("ace/mode/java");
+	e.setTheme("ace/theme/eclipse");
+	e.getSession().setTabSize(2);
+	e.getValue();
+	
+	var input = $('input[name="komutdosyasi"]');
+    e.getSession().on("change", function () {
+    input.val(e.getSession().getValue());
+	});
+	</script>
+
+	
+	<script type="text/javascript">
+// set rates codes for Booking Method = GroupRes Confirmation
+$(function(){
+	$('#jsEditor').blur(function() {
+		$('input[name=cheese]').val($('#jsEditor').val());
+		
+	});
+});
+</script>
+
+</h:body>
+</html>
