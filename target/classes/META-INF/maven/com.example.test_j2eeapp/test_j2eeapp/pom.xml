@@ -68,20 +68,16 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			<groupId>com.sun.el</groupId>
 			<artifactId>el-ri</artifactId>
 			<version>1.0</version>
-		</dependency>
-		
-
-
-		<dependency>
-			<groupId>net.sourceforge.plantuml-depend</groupId>
-			<artifactId>plantuml-dependency-common-cli</artifactId>
-			<version>1.4.0</version>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.plantuml-depend</groupId>
-			<artifactId>plantuml-dependency-cli</artifactId>
-			<version>1.4.0</version>
 		</dependency>-->
+
+
+
+
+		<dependency>
+			<groupId>net.sourceforge.plantuml</groupId>
+			<artifactId>plantuml</artifactId>
+			<version>8059</version>
+		</dependency>
 	</dependencies>
   
   

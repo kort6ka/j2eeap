@@ -29,6 +29,5 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/u1dd_fsm/Downloads/plantuml.1.2018.8.jar" sourcepath="C:/Users/u1dd_fsm/Downloads/plantuml.1.2018.8.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

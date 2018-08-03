@@ -14,7 +14,20 @@ import javax.imageio.ImageIO;
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 
-import net.sourceforge.plantuml.*;
+import net.sourceforge.plantuml.SourceStringReader;
+
+//import net.sourceforge.plantuml.SourceStringReader;
+//import net.sourceforge.plantuml.core.DiagramDescription;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 
 
 
@@ -43,37 +56,43 @@ public class EditorBean {
 
         txtAnotherProperty1= request.getParameter("komutdosyasi");
 
-        System.out.println(txtAnotherProperty1);
+//        System.out.println(txtAnotherProperty1);
         
         use(txtAnotherProperty1);
         
-        
+
         
 	}
 	
 	public void use(String plantUmlMarkup) throws IOException{
 		
 //		FileOutputStream fileOS = null;
-		
-		
-		try {
-			ByteArrayOutputStream bous = new ByteArrayOutputStream();
-			SourceStringReader reader = new SourceStringReader(plantUmlMarkup);
-			String desc = reader.generateImage(bous);
-			
-			byte [] data = bous.toByteArray();
-			InputStream in = new ByteArrayInputStream(data);
-		    BufferedImage convImg = ImageIO.read(in);
-
-		    ImageIO.write(convImg, "png", new File(".\\image.png"));
-
-		    System.out.print(desc);
-			System.out.println("Done");
-		} catch (FileNotFoundException e) {
-			// TODO: handle exception
-			System.out.println("F not found");
-			
-		}
+//		System.out.println(plantUmlMarkup);
+		String test = "@startuml\n!pragma graphviz_dot jdot\n"+plantUmlMarkup+"\n@enduml";
+		System.out.println(test);
+//		SourceStringReader s = new net.sourceforge.plantuml.SourceStringReader("@startuml\nBob->Alice:hello\n@enduml");
+		SourceStringReader s = new net.sourceforge.plantuml.SourceStringReader(test);
+				FileOutputStream file = new FileOutputStream(".\\image.png");
+				s.generateImage(file);
+				file.close();
+//		try {
+//			ByteArrayOutputStream bous = new ByteArrayOutputStream();
+////			SourceStringReader reader = new SourceStringReader(plantUmlMarkup);
+////			DiagramDescription desc = reader.outputImage(bous);
+////			
+//			byte [] data = bous.toByteArray();
+//			InputStream in = new ByteArrayInputStream(data);
+//		    BufferedImage convImg = ImageIO.read(in);
+//
+//		    ImageIO.write(convImg, "png", new File(".\\image.png"));
+//
+////		    System.out.print(desc);
+//			System.out.println("Done");
+//		} catch (FileNotFoundException e) {
+//			// TODO: handle exception
+//			System.out.println("F not found");
+//			
+//		}
 		
 		
 //		try {
