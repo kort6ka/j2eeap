@@ -13,6 +13,7 @@ import javax.faces.context.FacesContext;
 import javax.imageio.ImageIO;
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.sourceforge.plantuml.SourceStringReader;
 
@@ -48,112 +49,30 @@ public class EditorBean {
 		this.value = value;
 	}
 	
-	 
+
 
 	public void show() throws ScriptException, IOException {
-
 		HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-
-        txtAnotherProperty1= request.getParameter("komutdosyasi");
-
-//        System.out.println(txtAnotherProperty1);
-        
+        txtAnotherProperty1= request.getParameter("komutdosyasi");        
         use(txtAnotherProperty1);
-        
-
-        
+        display();        
+	}
+	
+	public void display() {
+		
+		String sRootPath = new File("/").getAbsolutePath();
+		System.out.println(sRootPath);
 	}
 	
 	public void use(String plantUmlMarkup) throws IOException{
-		
-//		FileOutputStream fileOS = null;
-//		System.out.println(plantUmlMarkup);
 		String test = "@startuml\n!pragma graphviz_dot jdot\n"+plantUmlMarkup+"\n@enduml";
 		System.out.println(test);
-//		SourceStringReader s = new net.sourceforge.plantuml.SourceStringReader("@startuml\nBob->Alice:hello\n@enduml");
 		SourceStringReader s = new net.sourceforge.plantuml.SourceStringReader(test);
-				FileOutputStream file = new FileOutputStream(".\\image.png");
-				s.generateImage(file);
-				file.close();
-//		try {
-//			ByteArrayOutputStream bous = new ByteArrayOutputStream();
-////			SourceStringReader reader = new SourceStringReader(plantUmlMarkup);
-////			DiagramDescription desc = reader.outputImage(bous);
-////			
-//			byte [] data = bous.toByteArray();
-//			InputStream in = new ByteArrayInputStream(data);
-//		    BufferedImage convImg = ImageIO.read(in);
-//
-//		    ImageIO.write(convImg, "png", new File(".\\image.png"));
-//
-////		    System.out.print(desc);
-//			System.out.println("Done");
-//		} catch (FileNotFoundException e) {
-//			// TODO: handle exception
-//			System.out.println("F not found");
-//			
-//		}
-		
-		
-//		try {
-//			BufferedWriter wr = new BufferedWriter(new FileWriter(".\\test1.txt"));
-//			wr.write(plantUmlMarkup);
-//			wr.close();
-//			System.out.println("Done");
-//		} catch (FileNotFoundException e) {
-//			// TODO: handle exception
-//			System.out.println("F not found");
-//			
-//		}
+		FileOutputStream file = new FileOutputStream("C:\\dev\\image.png");
+		s.generateImage(file);
+//		System.out.println(System.getProperty("./"));
+		file.close();		
 
-		
-		
-		
-		
-		
-		
-		
-//		StringBuilder plantUmlSource = new StringBuilder();
-//
-//        plantUmlSource.append("@startuml\n");
-//
-//        plantUmlSource.append("car --|> wheel");
-//
-//        plantUmlSource.append("@enduml");
-//		
-//        @startuml
-//        !pragma graphviz_dot jdot
-//        class Foo1
-//
-//        Foo1 --> Foo2
-//        Foo1 --> Foo3
-//        Foo1 ---> Foo4 : test 4
-//        Foo1 ----> Foo5 : test 5
-//
-//        @enduml
-//
-//
-//        
-//        /*
-//
-//        * @startuml
-//		!pragma graphviz_dot jdot
-//        * car --|> wheel
-//
-//        * @enduml
-//
-//        */
-////
-////        SourceStringReader reader = new SourceStringReader(plantUmlSource.toString());
-//
-////        FileOutputStream output = new FileOutputStream(new File("C:/Users/u1dd_fsm/test.svg"));
-////
-////        reader.generateImage(output, new FileFormatOption(FileFormat.SVG, false));
-//		Transcoder t = TranscoderUtil.getDefaultTranscoder();
-//        String s = "Alice->Bob: hello1\nAlice->Bob: hello2\n";
-//        String url = t.encode(s);
-////        System.err.println(url);
-//        System.out.println(s);
 	}
 	
 }
