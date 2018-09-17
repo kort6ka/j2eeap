@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<link rel="stylesheet" type="text/css" href="${request.contextPath}/css/style.css" />	
+	<script type="text/javascript" src="${request.contextPath}/js/ace/ace.js"></script>	
+</h:head>
+<h:body>
+	<p:layout style="min-width:400px;min-height:500px;">  
+		<p:layoutUnit position="center">  	
+			<p:dataTable var="" value="">
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Teacher area"/>
+					</f:facet>
+					<h:form id="myForm" method="post" action="TeacherBean.java">	
+						<input type="text" name="task_name" />
+						<input type="text" id="jsEditor" name="jsEditor" value="" style="cursor: text"/>
+						<input name="cheese" type="hidden" class="inputext" value=""  style="cursor: text" id="cheese" />	
+						<input type="hidden" name="task" style="display: none;" />	
+						<p:commandButton value="Create task" actionListener="${teacher.getTask()}"> </p:commandButton>
+						<p:commandButton value="Go Back" actionListener="${teacher.goBack()}"> </p:commandButton>		
+					</h:form>
+				</p:column>
+			</p:dataTable>	 
+		</p:layoutUnit>  
+	</p:layout> 
+<script> 
+	var e = ace.edit("jsEditor");
+	e.getSession().setMode("ace/mode/java");
+	e.setTheme("ace/theme/eclipse");
+	e.getSession().setTabSize(2);
+	e.getValue();
+	
+	var input = $('input[name="task"]');
+    e.getSession().on("change", function () {
+    input.val(e.getSession().getValue());
+	});
+	</script>
+
+	
+	<script type="text/javascript">
+// set rates codes for Booking Method = GroupRes Confirmation
+$(function(){
+	$('#jsEditor').blur(function() {
+		$('input[name=cheese]').val($('#jsEditor').val());
+		
+	});
+});
+</script>
+
+</h:body>
+</html>
