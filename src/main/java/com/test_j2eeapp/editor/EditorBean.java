@@ -50,7 +50,12 @@ import java.util.List;
 //@ViewScoped
 
 public class EditorBean {
-	private String value = "";
+	private String value = "public class Test{\r\n" + 
+			"    int getBalanceTest(){\r\n" + 
+			"        return 10000;\r\n" + 
+			"    }\r\n" + 
+			"}";
+//	private String testResultValue = "1";
 	private String random;
 	private String txtAnotherProperty1;
 	private ArrayList<String> list = new ArrayList<String>();
@@ -63,18 +68,18 @@ public class EditorBean {
 	public String getValue() {
 		return value;
 	}
+	
 
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
-	
+
 	
 	
 	
 	public void show() throws Exception {
-		HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		value = request.getParameter("komutdosyasi"); 
+//		HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+//		value = request.getParameter("komutdosyasi"); 
 //		CompilerBean cb1 = new CompilerBean();
 //		cb1.compile(value);	
 		
@@ -82,17 +87,24 @@ public class EditorBean {
 		//test
 		Result result = JUnitCore.runClasses(EditorBeanTest.class);
 //		System.out.println(result.wasSuccessful());
+	
 		if(result.wasSuccessful() == true) {
 //			use(value);
-			
-			System.out.println("Test is ok");
+//			value = "Test is ok";
+			System.out.println("Test is ok ");
+//			FacesContext.getCurrentInstance().getExternalContext().redirect("./");
 		}else {
 //			use(value);
+//			clearTask();
 			System.out.println("Test is not ok");
+//			value += "Test is not ok "; 
+//			value += "\n\r";
 			for (Failure failure : result.getFailures()) {
 		         System.out.println(failure.toString());
+		         //value += failure.toString();
+		         
 		      }
-			
+//			FacesContext.getCurrentInstance().getExternalContext().redirect("./");
 		}
 //		System.out.println(getValue()+"getvalue");
 		//test

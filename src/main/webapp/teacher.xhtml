@@ -19,11 +19,18 @@
 					<f:facet name="header">
 						<h:outputText value="Teacher area"/>
 					</f:facet>
-					<h:form id="myForm" method="post" action="TeacherBean.java">	
+					<h:form id="myForm">	
 						<input type="text" name="task_name" />
-						<input type="text" id="jsEditor" name="jsEditor" value="" style="cursor: text"/>
-						<input name="cheese" type="hidden" class="inputext" value=""  style="cursor: text" id="cheese" />	
+						<p:panel>
+							<input type="text" id="jsEditor" name="jsEditor" value="" style="cursor: text"/>
+						</p:panel>
+						<p:panel>
+							<input type="text" id="jsEditor_testTask" name="jsEditor_testTask" value="" style="cursor: text"/>
+						</p:panel>
+						<input name="cheese" type="hidden" class="inputext" value=""  style="cursor: text" id="cheese" />
+						<input name="cheese_testTask" type="hidden" class="inputext" value=""  style="cursor: text" id="cheese_testTask" />	
 						<input type="hidden" name="task" style="display: none;" />	
+						
 						<p:commandButton value="Create task" actionListener="${teacher.getTask()}"> </p:commandButton>
 						<p:commandButton value="Go Back" actionListener="${teacher.goBack()}"> </p:commandButton>		
 					</h:form>
@@ -38,9 +45,19 @@
 	e.getSession().setTabSize(2);
 	e.getValue();
 	
+	var eTestTask = ace.edit("jsEditor_testTask");
+	eTestTask.getSession().setMode("ace/mode/java");
+	eTestTask.setTheme("ace/theme/eclipse");
+	eTestTask.getSession().setTabSize(2);
+	eTestTask.getValue();
+	
 	var input = $('input[name="task"]');
     e.getSession().on("change", function () {
     input.val(e.getSession().getValue());
+	});
+    var input_testTask = $('input[name="cheese_testTask"]');
+    eTestTask.getSession().on("change", function () {
+    input_testTask.val(eTestTask.getSession().getValue());
 	});
 	</script>
 
@@ -51,7 +68,16 @@ $(function(){
 	$('#jsEditor').blur(function() {
 		$('input[name=cheese]').val($('#jsEditor').val());
 		
+		
 	});
+	
+	$('#jsEditor_testTask').blur(function() {
+		$('input[name=cheese_testTask]').val($('#jsEditor_testTask').val());
+		
+	});
+});
+$(function(){
+	
 });
 </script>
 

@@ -12,21 +12,33 @@
 	<script type="text/javascript" src="${request.contextPath}/js/ace/ace.js"></script>	
 </h:head>
 <h:body>
-<p:layout style="min-width:400px;min-height:500px;">  
+<p:layout style="min-width:800px;min-height:1500px;">  
 	<p:layoutUnit position="center">  	
 		<p:dataTable var="main" value="da1">
 			<p:column>
 				<f:facet name="header">
 					<h:outputText value="Task description" />
 				</f:facet>
-				 <ui:repeat var="item" value="${editor.list}"> 
-	            		<p>${item}</p>           		
-	        	</ui:repeat> 
-	        	<h:form id="descriptionForm">
-					<input type="hidden" name="random" style="display: none;" value="" />
-		        	<p:commandButton id="displayTask" value="Load task" actionListener="${editor.displayTask()}"></p:commandButton>
-		        	<p:commandButton value="Clear task" actionListener="${editor.clearTask()}"></p:commandButton>
-		        </h:form>
+				<p:fieldset style="min-width:300px;min-height:300px;">
+					 <ui:repeat var="item" value="${editor.list}"> 
+		            		<p>${item}</p>           		
+		        	</ui:repeat>
+		        </p:fieldset>
+	        	 <p:fieldset style="margin-bottom:20px">
+		        	<h:form id="descriptionForm">
+						<input type="hidden" name="random" style="display: none;" value="" />
+			        	<p:commandButton id="displayTask" value="Load task" actionListener="${editor.displayTask()}"></p:commandButton>
+			        	<p:commandButton value="Clear task" actionListener="${editor.clearTask()}"></p:commandButton>
+			        		                
+		            		<ui:repeat var="item" value="${editor.list}"> 
+								<input type="text" class="ace_editor_readOnly" id="jsEditor_readOnly" name="jsEditor_readOnly" value="#{item}" style="cursor: text;"/>	        
+								<input type="text" class="ace_editor_testResult" id="jsEditor_testResult" name="jsEditor_testResult"  value="${editor.value}" style="cursor: text;"/> 	
+		        			</ui:repeat>
+							 
+		        	
+			        </h:form>
+			    </p:fieldset>
+		        
 			</p:column>		
 			<p:column>
 				<f:facet name="header">
@@ -35,30 +47,48 @@
 				<h:form id="myForm">
 					<p:tabView>
 						<p:tab title="Task_1">
-							<input type="text" id="jsEditor" name="jsEditor"  value="" style="cursor: text"/>	
+							<input type="text" id="jsEditor" name="jsEditor" value="" style="cursor: text;"/>	
 							<input name="cheese" type="hidden" class="inputext" value=""  style="cursor: text" id="cheese" />	
 							<input type="hidden" name="komutdosyasi" style="display: none;" />	
-							<p:commandButton value="Click here" actionListener="${editor.show()}"> </p:commandButton>
+							
 							<!--<h:commandButton value="Prepare" action="${editor.prepareFile()}" /> -->
 						</p:tab>
 						<p:tab title="Task_2">
 							<input type="text" id="jsEditor_1" name="jsEditor_1"  value="" style="cursor: text"/>	
 							<input name="cheese" type="hidden" class="inputext" value=""  style="cursor: text" id="cheese" />	
 							<input type="hidden" name="komutdosyasi" style="display: none;" />	
-							<p:commandButton value="Click here" actionListener="${editor.show()}"> </p:commandButton>
-							<!--<h:commandButton value="Prepare" action="${editor.prepareFile()}" /> -->
 						</p:tab>
 					</p:tabView>
+						 <ui:repeat var="item" value="${editor.list}"> 
 						
+		            		<input type="hidden" name="valueForTest" value="#{item}"/>
+		            		<input type="hidden" name="codeTest" value="${editor.value}"/>           		
+		        		</ui:repeat>
+			           	
+
+						
+						<p:commandButton value="Run Test" actionListener="${editor.show()}"> </p:commandButton>
 				</h:form>
 			</p:column>
 			<p:column>
 				<f:facet name="header">
 					<h:outputText value="Results" />
 				</f:facet>
-				<p:panel style="border: 1px solid #000000;" header="Result">
-					<!--  <h:graphicImage url="C:/dev/image.png" />-->
-	    		</p:panel>
+				
+				<!--  p:panel style="border: 1px solid #000000;" header="Result">-->
+				<p:tabView style="min-width:300px;min-height:300px;">
+					<p:tab title="Task_1">
+						<p:graphicImage value=".\images\image.jpeg" />
+					</p:tab>
+					<p:tab title="Task_2">
+						<p:graphicImage value=".\images\image.jpeg" />
+					</p:tab>
+				</p:tabView>
+				
+					
+
+					
+	    		<!--</p:panel>-->
 			</p:column>
 		</p:dataTable>
 	</p:layoutUnit>  
@@ -77,12 +107,46 @@
 	e.getSession().setMode("ace/mode/java");
 	e.setTheme("ace/theme/eclipse");
 	e.getSession().setTabSize(2);
-	e.getValue();
+	e.getSession().getScreenLength();
+	
+	
+	
+	var eReadOnly = ace.edit("jsEditor_readOnly");
+	eReadOnly.getSession().setMode("ace/mode/java");
+	eReadOnly.setTheme("ace/theme/eclipse");
+	eReadOnly.container.classList.add("ace_editor_readOnly");
+	//eReadOnly.getSession().setTabSize(2);
+	eReadOnly.setOptions({		
+	    //readOnly: true,
+	    highlightActiveLine: false,
+	    highlightGutterLine: false
+	});
+	var ejsEditor_testResult = ace.edit("jsEditor_testResult");
+	ejsEditor_testResult.getSession().setMode("ace/mode/java");
+	ejsEditor_testResult.setTheme("ace/theme/eclipse");
+	ejsEditor_testResult.container.classList.add("ace_editor_testResult");
+	//eReadOnly.getSession().setTabSize(2);
+	ejsEditor_testResult.setOptions({		
+	    //readOnly: true,
+	    highlightActiveLine: false,
+	    highlightGutterLine: false
+	});
 	
 	var input = $('input[name="komutdosyasi"]');
-    e.getSession().on("change", function () {
+	e.getSession().on("change", function () {
     input.val(e.getSession().getValue());
 	});
+	
+    var input_jsEditor_readOnly = $('input[name="valueForTest"]');
+    eReadOnly.getSession().on("change", function () {
+    	input_jsEditor_readOnly.val(eReadOnly.getSession().getValue());
+	});
+    
+    var input_jsEditor_testResult = $('input[name="codeTest"]');
+    ejsEditor_testResult.getSession().on("change", function () {
+    	input_jsEditor_testResult.val(ejsEditor_testResult.getSession().getValue());
+	});
+
 	</script>
 
 	
@@ -92,6 +156,13 @@ $(function(){
 	$('#jsEditor').blur(function() {
 		$('input[name=cheese]').val($('#jsEditor').val());
 	});
+	$('#jsEditor_readOnly').bind(function() {
+		$('input[name=valueForTest]').val($('#jsEditor_readOnly').val());
+	});
+	$('#jsEditor_testResult').bind(function() {
+		$('input[name=codeTest]').val($('#jsEditor_testResult').val());
+	});
+
 });
 
 $(function(){

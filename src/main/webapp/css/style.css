@@ -3,8 +3,24 @@ body{
 	background-color: #f0f0f0;
 }
 .ace_editor{
-	height: 200px!important;
-	width: 400px!important;
+	height: 500px!important;
+	width: 600px!important;
+	margin-right: -80px!important;
+	border: 1px solid #DDDDDD;
+	border-radius: 2px!important;
+}
+.ace_editor_readOnly{
+	bot:-50px;
+	height: 50px!important;
+	width: 200px!important;
+	margin-right: -80px!important;
+	border: 1px solid #DDDDDD;
+	border-radius: 2px!important;
+}
+.ace_editor_testResult{
+	
+	height: 150px!important;
+	width: 500px!important;
 	margin-right: -80px!important;
 	border: 1px solid #DDDDDD;
 	border-radius: 2px!important;
