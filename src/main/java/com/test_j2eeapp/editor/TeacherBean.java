@@ -16,6 +16,7 @@ import java.io.File;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -30,23 +31,44 @@ import com.google.zxing.Writer;
 
 @ManagedBean(name = "teacher")
 public class TeacherBean {
-	private String task;
-	private String task_name;
-	private String cheese_testTask;
+//	private String taskInstruction;
+//	private String testCode;
+//	private String sourceCode;
+//	private String plantUmlCode;
+	HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
 	public void getTask() throws ScriptException, IOException {
-		HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		task = request.getParameter("task");
-		task_name = request.getParameter("task_name"); 
-		cheese_testTask = request.getParameter("cheese_testTask"); 
-        createTask(task, task_name);
-        createTaskXml();
+		
+		String taskHeader = request.getParameter("task_name");
+		String taskInstruction = request.getParameter("taskInstruction");
+		String testCode = request.getParameter("testCode");
+		String testValue = request.getParameter("testValue");
+		String sourceCode = request.getParameter("sourceCode"); 
+		String plantUmlCode = request.getParameter("plantUmlCode");
+//		System.out.println(task + task_name + cheese_testTask);
+//        createTask(task, task_name);
+		
+        createTaskXml(taskHeader ,taskInstruction, testCode,testValue, sourceCode, plantUmlCode);
 	}
 	public void goBack() throws IOException {
 		FacesContext.getCurrentInstance().getExternalContext().redirect("./");
 	}
-	public void createTaskXml() {
+	public void generateImage() throws IOException{
+		String plantUmlCode = request.getParameter("plantUmlCode");
+		System.out.println(plantUmlCode);
+		CompilerBean cb = new CompilerBean();
+		cb.generateGraph(plantUmlCode, request.getParameter("task_name"));
+		cb.generateGraph(plantUmlCode, "image-tobe");
+	}
+	public void createTaskXml(String taskHeader, String taskInstruction, String testCode, String testValue, String sourceCode, String plantUmlCode) {
 		try {
-
+				
+			System.out.println(taskHeader);
+			System.out.println(taskInstruction);
+			System.out.println(testValue);
+			System.out.println(testCode);
+			System.out.println(sourceCode);
+			System.out.println(plantUmlCode);
+			
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
@@ -68,36 +90,55 @@ public class TeacherBean {
 			// staff.setAttribute("id", "1");
 
 			// firstname elements
-			Element firstname = doc.createElement("taskname");
-			firstname.appendChild(doc.createTextNode(task_name));
+			Element taskHeaderXml = doc.createElement("taskHeader");
+			taskHeaderXml.appendChild(doc.createTextNode(taskHeader));
+			rootElement.appendChild(taskHeaderXml);
+			
+			Element firstname = doc.createElement("taskInstruction");
+			firstname.appendChild(doc.createTextNode(taskInstruction));
 			rootElement.appendChild(firstname);
+			
+			// lastname elements
+						Element testValueXml = doc.createElement("testValue");
+						testValueXml.appendChild(doc.createTextNode(testValue));
+						rootElement.appendChild(testValueXml);
 
 			// lastname elements
-			Element lastname = doc.createElement("task");
-			lastname.appendChild(doc.createTextNode(task));
+			Element lastname = doc.createElement("testCode");
+			lastname.appendChild(doc.createTextNode(testCode));
 			rootElement.appendChild(lastname);
 
 			// nickname elements
-			Element nickname = doc.createElement("testTask");
-			nickname.appendChild(doc.createTextNode(cheese_testTask));
+			Element nickname = doc.createElement("sourceCode");
+			nickname.appendChild(doc.createTextNode(sourceCode));
 			rootElement.appendChild(nickname);
 
 			// salary elements
-//			Element salary = doc.createElement("salary");
-//			salary.appendChild(doc.createTextNode("100000"));
-//			staff.appendChild(salary);
+			Element salary = doc.createElement("plantUmlCode");
+			salary.appendChild(doc.createTextNode(plantUmlCode));
+			rootElement.appendChild(salary);
 
 			// write the content into xml file
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
+
+//			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+			transformer.setOutputProperty("http://www.oracle.com/xml/is-standalone", "yes");
 			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File(".\\tasks\\"+ task_name +".xml"));
+			StreamResult result = new StreamResult(new File(".\\tasks\\"+ taskHeader +".xml"));
 
 			// Output to console for testing
 			// StreamResult result = new StreamResult(System.out);
 
+			
 			transformer.transform(source, result);
 
+				
 			System.out.println("File saved!");
 
 		  } catch (ParserConfigurationException pce) {
@@ -107,9 +148,7 @@ public class TeacherBean {
 		  }
 	}
 	public void createTask(String task, String task_name) {
-		System.out.println(task_name);	
-		System.out.println(task);	
-		System.out.println(cheese_testTask);	
+			
 		try{
             // Create new file
             File file = new File(".\\tasks\\"+ task_name +".txt");

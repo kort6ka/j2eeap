@@ -6,58 +6,138 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
-
 <h:head>
 	<link rel="stylesheet" type="text/css" href="${request.contextPath}/css/style.css" />	
 	<script type="text/javascript" src="${request.contextPath}/js/ace/ace.js"></script>	
 </h:head>
 <h:body>
-	<p:layout style="min-width:400px;min-height:500px;">  
-		<p:layoutUnit position="center">  	
-			<p:dataTable var="" value="">
-				<p:column>
-					<f:facet name="header">
-						<h:outputText value="Teacher area"/>
-					</f:facet>
-					<h:form id="myForm">	
-						<input type="text" name="task_name" />
-						<p:panel>
-							<input type="text" id="jsEditor" name="jsEditor" value="" style="cursor: text"/>
-						</p:panel>
-						<p:panel>
-							<input type="text" id="jsEditor_testTask" name="jsEditor_testTask" value="" style="cursor: text"/>
-						</p:panel>
-						<input name="cheese" type="hidden" class="inputext" value=""  style="cursor: text" id="cheese" />
-						<input name="cheese_testTask" type="hidden" class="inputext" value=""  style="cursor: text" id="cheese_testTask" />	
-						<input type="hidden" name="task" style="display: none;" />	
+	<p:layout style="min-width:400px;min-height:1500px;">  
+		<p:layoutUnit position="center">
+		<p:column>
+				<h:form id="adminPanel">
+					<p:commandButton value="Go Back" actionListener="${teacher.goBack()}"> </p:commandButton>
+					<p:commandButton value="Create task" actionListener="${teacher.getTask()}"> </p:commandButton>
+					<p:commandButton value="Generate Image" actionListener="${teacher.generateImage()}"> </p:commandButton>
+					<p>Task Name</p>
+						<input type="text" id="task_name" name="task_name" />
+						<input name="taskInstruction" type="hidden" style="display: none;"  id="taskInstruction" />	
+						<input name="testCode" type="hidden" class="inputext" value=""  style="cursor: text" id="testCode" />
+						<input name="testValue" type="hidden" class="inputext" value=""  style="cursor: text" id="testValue" />
+						<input name="sourceCode" type="hidden" class="inputext" value=""  style="cursor: text" id="sourceCode" />	
+						<input name="plantUmlCode" type="hidden" class="inputext" value=""  style="cursor: text" id="plantUmlCode" />	
 						
-						<p:commandButton value="Create task" actionListener="${teacher.getTask()}"> </p:commandButton>
-						<p:commandButton value="Go Back" actionListener="${teacher.goBack()}"> </p:commandButton>		
+				</h:form>
+			</p:column>
+		<p:dataTable var="main" value="da1">
+		
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Task description" />
+				</f:facet>
+				<p:panel>
+					<h:outputText value="Task Instruction" />
+					<input type="text" id="jsEditor_taskInstruction" name="jsEditor" value="" style="cursor: text"/>
+				</p:panel>
+				<p:panel>
+				<h:outputText value="Task Value(if needed)" />
+					<input type="text" id="jsEditor_testValue" name="jsEditor" value="" style="cursor: text"/>
+				</p:panel>
+				<p:panel>
+					<h:outputText value="Test Code(if needed)" />
+					<input type="text" id="jsEditor_testCode" name="jsEditor" value="" style="cursor: text"/>
+				</p:panel>
+
+			</p:column>
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Source Code" />
+				</f:facet>
+				<p:panel>
+					<input type="text" id="jsEditor_sourceCode" name="jsEditor" value="" style="cursor: text"/>
+				</p:panel>
+			</p:column>
+			<p:column>
+					<f:facet name="header">
+						<h:outputText value="Plant UML"/>
+					</f:facet>
+					<h:form id="myForm">
+						
+						
+						<p:panel>
+							<h:outputText value="Plant UML Code"/>
+							<input type="text" id="jsEditor_plantUmlCode" name="jsEditor" value="" style="cursor: text"/>
+						</p:panel>
+						<p:panel>
+							<img id="image-tobe" src=".\\images\\image-tobe.png" alt="fullPage" />
+						</p:panel>
+
+						
+						
 					</h:form>
-				</p:column>
+			</p:column>
+		</p:dataTable>  	
+			<p:dataTable var="" value="">
+
 			</p:dataTable>	 
 		</p:layoutUnit>  
 	</p:layout> 
 <script> 
-	var e = ace.edit("jsEditor");
-	e.getSession().setMode("ace/mode/java");
-	e.setTheme("ace/theme/eclipse");
-	e.getSession().setTabSize(2);
-	e.getValue();
+	var e_taskInstruction = ace.edit("jsEditor_taskInstruction");
+	e_taskInstruction.getSession().setMode("ace/mode/java");
+	e_taskInstruction.setTheme("ace/theme/eclipse");
+	e_taskInstruction.getSession().setTabSize(2);
+	e_taskInstruction.getValue();
+		
+	var e_testCode = ace.edit("jsEditor_testCode");
+	e_testCode.getSession().setMode("ace/mode/java");
+	e_testCode.setTheme("ace/theme/eclipse");
+	e_testCode.getSession().setTabSize(2);
+	e_testCode.container.classList.add("ace_editor_testResult");
+	e_testCode.getValue();
 	
-	var eTestTask = ace.edit("jsEditor_testTask");
-	eTestTask.getSession().setMode("ace/mode/java");
-	eTestTask.setTheme("ace/theme/eclipse");
-	eTestTask.getSession().setTabSize(2);
-	eTestTask.getValue();
+	var e_testValue = ace.edit("jsEditor_testValue");
+	e_testValue.getSession().setMode("ace/mode/java");
+	e_testValue.setTheme("ace/theme/eclipse");
+	e_testValue.getSession().setTabSize(2);
+	e_testValue.container.classList.add("ace_editor_readOnly");
+	e_testValue.getValue();
 	
-	var input = $('input[name="task"]');
-    e.getSession().on("change", function () {
-    input.val(e.getSession().getValue());
+	var e_sourceCode = ace.edit("jsEditor_sourceCode");
+	e_sourceCode.getSession().setMode("ace/mode/java");
+	e_sourceCode.setTheme("ace/theme/eclipse");
+	e_sourceCode.getSession().setTabSize(2);
+	e_sourceCode.container.classList.add("ace_editor_sourceCode");
+	e_sourceCode.getValue();
+	
+	var e_plantUmlCode = ace.edit("jsEditor_plantUmlCode");
+	e_plantUmlCode.getSession().setMode("ace/mode/java");
+	e_plantUmlCode.setTheme("ace/theme/eclipse");
+	e_plantUmlCode.getSession().setTabSize(2);
+	e_plantUmlCode.getValue();
+	
+	var taskInstruction = $('input[name="taskInstruction"]');
+	e_taskInstruction.getSession().on("change", function () {
+		taskInstruction.val(e_taskInstruction.getSession().getValue());
 	});
-    var input_testTask = $('input[name="cheese_testTask"]');
-    eTestTask.getSession().on("change", function () {
-    input_testTask.val(eTestTask.getSession().getValue());
+    
+    var testCode = $('input[name="testCode"]');
+    e_testCode.getSession().on("change", function () {
+    	testCode.val(e_testCode.getSession().getValue());
+	});
+    
+    var testValue = $('input[name="testValue"]');
+    e_testValue.getSession().on("change", function () {
+    	testValue.val(e_testValue.getSession().getValue());
+	});
+    
+    var sourceCode = $('input[name="sourceCode"]');
+    e_sourceCode.getSession().on("change", function () {
+    	sourceCode.val(e_sourceCode.getSession().getValue());
+	});
+    
+    var plantUmlCode = $('input[name="plantUmlCode"]');
+    e_plantUmlCode.getSession().on("change", function () {
+    	plantUmlCode.val(e_plantUmlCode.getSession().getValue());
 	});
 	</script>
 
@@ -65,20 +145,37 @@
 	<script type="text/javascript">
 // set rates codes for Booking Method = GroupRes Confirmation
 $(function(){
-	$('#jsEditor').blur(function() {
-		$('input[name=cheese]').val($('#jsEditor').val());
-		
+	
+	$('#jsEditor_taskInstruction').blur(function() {
+		$('input[name=taskInstruction]').val($('#jsEditor_taskInstruction').val());
 		
 	});
 	
-	$('#jsEditor_testTask').blur(function() {
-		$('input[name=cheese_testTask]').val($('#jsEditor_testTask').val());
+	$('#jsEditor_testCode').blur(function() {
+		$('input[name=testCode]').val($('#jsEditor_testCode').val());
 		
 	});
+	$('#jsEditor_testValue').blur(function() {
+		$('input[name=testValue]').val($('#jsEditor_testValue').val());
+		
+	});
+	$('#jsEditor_sourceCode').blur(function() {
+		$('input[name=sourceCode]').val($('#jsEditor_sourceCode').val());
+		
+	});
+	$('#jsEditor_plantUmlCode').blur(function() {
+		$('input[name=plantUmlCode]').val($('#jsEditor_plantUmlCode').val());
+		
+	});
+
 });
 $(function(){
 	
 });
+
+setInterval(function(){
+    $("#image-tobe").attr("src", ".\\images\\image-tobe.png?"+new Date().getTime());
+}, 2000)
 </script>
 
 </h:body>

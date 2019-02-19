@@ -1,5 +1,6 @@
 package com.test_j2eeapp.editor;
 
+import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -41,126 +42,218 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 
 
 @ManagedBean(name = "editor")
 @SessionScoped
-//@RequestScoped
-//@ViewScoped
-
 public class EditorBean {
-	private String value = "public class Test{\r\n" + 
-			"    int getBalanceTest(){\r\n" + 
-			"        return 10000;\r\n" + 
-			"    }\r\n" + 
-			"}";
-//	private String testResultValue = "1";
+//	private String value = "public class Test{\r\n int getBalanceTest(){\r\n return 10000;\r\n}\r\n}";
+	private String taskInstruction = "";
+	private String sourceCode = "";
+	private String task_image = "blank";
+	private String message = "";
+	private String testValue = "";
+	private String asisImage = "blank";
 	private String random;
-	private String txtAnotherProperty1;
+	private String conOutput = "blank";
+	private String testCode = "";
+	
 	private ArrayList<String> list = new ArrayList<String>();
 	
+	public String getConOutput() {
+		return conOutput;
+	}
+	
+	public String getAsisImage() {
+		return asisImage;
+	}
+	public String setAsisImage(String asisImage) {
+		return asisImage;
+	}
+	public String getTestValue() {
+		return testValue;
+	}
+	public String getTestCode() {
+		return testCode;
+	}
+	public String getTask_image() {
+		return task_image;
+	}
+	public String getSourceCode() {
+		return sourceCode;
+	}
 
 	public List<String> getList() {
 	    return this.list;
 	}
 	
-	public String getValue() {
-		return value;
+	public String getTaskInstruction() {
+		return taskInstruction;
 	}
 	
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setTaskInstruction(String taskInstruction) {
+		this.taskInstruction = taskInstruction;
 	}
+	public String getMessage() {
+		return message;
+	}
+	
 
+	public void getMessage(String message) {
+		this.message = message;
+	}
 	
-	
-	
+	public void displayImg() throws IOException {
+		FacesContext.getCurrentInstance().getExternalContext().redirect("./teacher.xhtml");
+	}
+	public void displayTeacher() throws IOException {
+		FacesContext.getCurrentInstance().getExternalContext().redirect("./teacher.xhtml");
+	}
 	public void show() throws Exception {
-//		HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-//		value = request.getParameter("komutdosyasi"); 
-//		CompilerBean cb1 = new CompilerBean();
-//		cb1.compile(value);	
 		
 		
 		//test
 		Result result = JUnitCore.runClasses(EditorBeanTest.class);
 //		System.out.println(result.wasSuccessful());
-	
+		 
 		if(result.wasSuccessful() == true) {
 //			use(value);
-//			value = "Test is ok";
+			message = "Test is ok \r\n";
 			System.out.println("Test is ok ");
+			
+			BufferedImage image = new CompilerBean().convertTextToGraphic(message, new Font("Arial", Font.PLAIN, 12));
+	        //write BufferedImage to file
+	        ImageIO.write(image, "png", new File("C:\\Users\\u1dd_fsm\\Desktop\\eclipse-workspace\\j2eeappnew\\src\\main\\webapp\\images\\console-output.png"));
 //			FacesContext.getCurrentInstance().getExternalContext().redirect("./");
 		}else {
 //			use(value);
 //			clearTask();
 			System.out.println("Test is not ok");
-//			value += "Test is not ok "; 
+			message = "Test is not ok \r\n"; 
 //			value += "\n\r";
 			for (Failure failure : result.getFailures()) {
-		         System.out.println(failure.toString());
-		         //value += failure.toString();
+		         message += failure.toString()+"\r\n";
 		         
 		      }
+//			System.out.println(message);
+			BufferedImage image = new CompilerBean().convertTextToGraphic(message, new Font("Arial", Font.PLAIN, 12));
+	        //write BufferedImage to file
+	        ImageIO.write(image, "png", new File("C:\\Users\\u1dd_fsm\\Desktop\\eclipse-workspace\\j2eeappnew\\src\\main\\webapp\\images\\console-output.png"));
 //			FacesContext.getCurrentInstance().getExternalContext().redirect("./");
 		}
-//		System.out.println(getValue()+"getvalue");
-		//test
-//        use(value);
+
                
 	}
 	public void clearTask() throws IOException {
+		String blankMessage = " ";
+		
+
+		//ImageIO.write(image, "png", new File("C:\\Users\\u1dd_fsm\\Desktop\\eclipse-workspace\\j2eeappnew\\src\\main\\webapp\\images\\image-tobe.png"));
 		FacesContext.getCurrentInstance().getExternalContext().redirect("./");
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		BufferedImage image = new CompilerBean().convertTextToGraphic(blankMessage, new Font("Arial", Font.PLAIN, 12));
+		ImageIO.write(image, "png", new File("C:\\Users\\u1dd_fsm\\Desktop\\eclipse-workspace\\j2eeappnew\\src\\main\\webapp\\images\\console-output.png"));
+		ImageIO.write(image, "png", new File("C:\\Users\\u1dd_fsm\\Desktop\\eclipse-workspace\\j2eeappnew\\src\\main\\webapp\\images\\image.png"));
 //		displayTask();
 	}
-	public void displayTask() {	
+	public void displayTask13() {	
 		HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
 		random = request.getParameter("random");
-//		random = "1";
-//		System.out.println(random);
-//		File folder = new File("C:\\dev\\Eclipse\\Oxygen\\tasks");
-//		
-//		for (File pdf : folder.listFiles()) { 
-//			System.out.println(pdf.getName());
-//		}
-		try {
-			FileReader reader = new FileReader("C:\\dev\\Eclipse\\Oxygen\\tasks\\task"+random+".txt");
-			BufferedReader bufferedReader = new BufferedReader(reader);
-			String line;
-			while ((line = bufferedReader.readLine()) != null) {
-//				System.out.println(line);
-				list.add(line);
-				
-			}
-				
-				reader.close();
-				FacesContext.getCurrentInstance().getExternalContext().redirect("./");
-//				prepareFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-	}	
-	public void use(String plantUmlMarkup) throws IOException{
-		
-//		System.out.println(plantUmlMarkup.contains("class"));
-//		for(int i = 0; i<5; i++) {
-//			if(plantUmlMarkup.contains("class") == true) {
-//				System.out.println(i);
+
+//		try {
+//			FileReader reader = new FileReader("C:\\dev\\Eclipse\\Oxygen\\tasks\\task"+random+".txt");
+//			BufferedReader bufferedReader = new BufferedReader(reader);
+//			String line;
+//			while ((line = bufferedReader.readLine()) != null) {
+////				System.out.println(line);
+//				list.add(line);
+//				
 //			}
-//		}
-//		System.out.println(plantUmlMarkup.replaceAll("\r\n", ""));
-//		String tst = plantUmlMarkup.replaceAll("\r", "");
-		String test = "@startuml\n!pragma graphviz_dot jdot\n"+plantUmlMarkup+"\n@enduml";
-//		System.out.println(test);
-		SourceStringReader s = new net.sourceforge.plantuml.SourceStringReader(test);
-		FileOutputStream file = new FileOutputStream("C:\\dev\\image.png");
-		s.generateImage(file);
-//		System.out.println(System.getProperty("./"));
-		file.close();
-	}
+//				
+//				reader.close();
+//				FacesContext.getCurrentInstance().getExternalContext().redirect("./");
+////				prepareFile();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+		
+		
+			SAXBuilder builder = new SAXBuilder();
+		  File xmlFile = new File("C:\\dev\\Eclipse\\Oxygen\\tasks\\task13.xml");
+		  try {
+
+				Document document = (Document) builder.build(xmlFile);
+				Element rootNode = document.getRootElement();
+				List list = rootNode.getChildren("Task");
+				taskInstruction = rootNode.getChildText("taskInstruction");				
+				testCode = rootNode.getChildText("testCode");				
+				sourceCode = rootNode.getChildText("sourceCode");
+				testValue = rootNode.getChildText("testValue");
+				task_image = rootNode.getChildText("taskHeader");
+				conOutput = "console-output";
+				asisImage = "image";
+				FacesContext.getCurrentInstance().getExternalContext().redirect("./");
+
+			  } catch (IOException io) {
+				System.out.println(io.getMessage());
+			  } catch (JDOMException jdomex) {
+				System.out.println(jdomex.getMessage());
+			  }
+		
+	}	
+	public void displayTask14() {	
+		HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		random = request.getParameter("random");
+
+//		try {
+//			FileReader reader = new FileReader("C:\\dev\\Eclipse\\Oxygen\\tasks\\task"+random+".txt");
+//			BufferedReader bufferedReader = new BufferedReader(reader);
+//			String line;
+//			while ((line = bufferedReader.readLine()) != null) {
+////				System.out.println(line);
+//				list.add(line);
+//				
+//			}
+//				
+//				reader.close();
+//				FacesContext.getCurrentInstance().getExternalContext().redirect("./");
+////				prepareFile();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+		
+		
+			SAXBuilder builder = new SAXBuilder();
+		  File xmlFile = new File("C:\\dev\\Eclipse\\Oxygen\\tasks\\task12.xml");
+		  try {
+
+				Document document = (Document) builder.build(xmlFile);
+				Element rootNode = document.getRootElement();
+				List list = rootNode.getChildren("Task");
+				taskInstruction = rootNode.getChildText("taskInstruction");				
+				testCode = rootNode.getChildText("testCode");				
+				sourceCode = rootNode.getChildText("sourceCode");
+				testValue = rootNode.getChildText("testValue");
+				task_image = rootNode.getChildText("taskHeader");
+				conOutput = "console-output";
+				asisImage = "image";
+				FacesContext.getCurrentInstance().getExternalContext().redirect("./");
+
+			  } catch (IOException io) {
+				System.out.println(io.getMessage());
+			  } catch (JDOMException jdomex) {
+				System.out.println(jdomex.getMessage());
+			  }
+		
+	}	
 	public void prepareFile() {
 		byte[] exportContent = "Hy Buddys, thanks for the help!".getBytes();
         // here something bad happens that the user should know about

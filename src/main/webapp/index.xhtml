@@ -13,31 +13,41 @@
 </h:head>
 <h:body>
 <p:layout style="min-width:800px;min-height:1500px;">  
-	<p:layoutUnit position="center">  	
+	<p:layoutUnit position="center">  
+		<p:dataTable var="main" value="da1">
+			<p:column>
+				<h:form id="adminPanel">
+					<p:commandButton id="displayTask" value="Teacher" actionListener="${editor.displayTeacher()}"></p:commandButton>
+				</h:form>
+			</p:column>
+		</p:dataTable>
 		<p:dataTable var="main" value="da1">
 			<p:column>
 				<f:facet name="header">
 					<h:outputText value="Task description" />
 				</f:facet>
-				<p:fieldset style="min-width:300px;min-height:300px;">
-					 <ui:repeat var="item" value="${editor.list}"> 
-		            		<p>${item}</p>           		
-		        	</ui:repeat>
+				<p:fieldset style="width:600px;min-height:300px;">
+					 
+		            		<p>${editor.taskInstruction}</p>           		
+		        	
 		        </p:fieldset>
-	        	 <p:fieldset style="margin-bottom:20px">
+
 		        	<h:form id="descriptionForm">
 						<input type="hidden" name="random" style="display: none;" value="" />
-			        	<p:commandButton id="displayTask" value="Load task" actionListener="${editor.displayTask()}"></p:commandButton>
-			        	<p:commandButton value="Clear task" actionListener="${editor.clearTask()}"></p:commandButton>
+			        	
 			        		                
-		            		<ui:repeat var="item" value="${editor.list}"> 
-								<input type="text" class="ace_editor_readOnly" id="jsEditor_readOnly" name="jsEditor_readOnly" value="#{item}" style="cursor: text;"/>	        
-								<input type="text" class="ace_editor_testResult" id="jsEditor_testResult" name="jsEditor_testResult"  value="${editor.value}" style="cursor: text;"/> 	
-		        			</ui:repeat>
-							 
-		        	
+		            		<p:panel>
+								<input type="text" class="ace_editor_readOnly" id="jsEditor_readOnly" name="jsEditor_readOnly" value="${editor.testValue}" style="cursor: text;"/>	
+							</p:panel>        
+								 <!-- <input type="text" class="ace_editor_testResult" id="jsEditor_testResult" name="jsEditor_testResult"  value="" style="cursor: text;"/> -->
+							<p:panel>
+		        				<textarea id="hello" rows="10" cols="70" >${editor.testCode} </textarea>
+							 </p:panel>
+		        	<p:commandButton id="displayTask" value="Task 1" actionListener="${editor.displayTask13()}"></p:commandButton>
+		        	<p:commandButton  value="Task 2" actionListener="${editor.displayTask14()}"></p:commandButton>
+			        	<p:commandButton value="Clear task" actionListener="${editor.clearTask()}"></p:commandButton>
 			        </h:form>
-			    </p:fieldset>
+
 		        
 			</p:column>		
 			<p:column>
@@ -45,51 +55,55 @@
 					<h:outputText value="jsEditor"/>
 				</f:facet>
 				<h:form id="myForm">
-					<p:tabView>
-						<p:tab title="Task_1">
-							<input type="text" id="jsEditor" name="jsEditor" value="" style="cursor: text;"/>	
+				<p:tabView>
+						<p:tab title="Source Code">
+							
+							 <textarea id="jsEditor" rows="40" cols="80"  >${editor.sourceCode} </textarea>
 							<input name="cheese" type="hidden" class="inputext" value=""  style="cursor: text" id="cheese" />	
-							<input type="hidden" name="komutdosyasi" style="display: none;" />	
+								
 							
 							<!--<h:commandButton value="Prepare" action="${editor.prepareFile()}" /> -->
 						</p:tab>
-						<p:tab title="Task_2">
-							<input type="text" id="jsEditor_1" name="jsEditor_1"  value="" style="cursor: text"/>	
-							<input name="cheese" type="hidden" class="inputext" value=""  style="cursor: text" id="cheese" />	
-							<input type="hidden" name="komutdosyasi" style="display: none;" />	
-						</p:tab>
 					</p:tabView>
-						 <ui:repeat var="item" value="${editor.list}"> 
-						
-		            		<input type="hidden" name="valueForTest" value="#{item}"/>
-		            		<input type="hidden" name="codeTest" value="${editor.value}"/>           		
-		        		</ui:repeat>
-			           	
+				
 
 						
+							<input type="hidden" name="komutdosyasi" value="${editor.sourceCode}" style="display: none;" />
+		            		<input type="hidden" name="valueForTest" value="${editor.testValue}"/>
+		            		<input type="hidden" name="aftermath" value="${editor.testCode}"/>
 						<p:commandButton value="Run Test" actionListener="${editor.show()}"> </p:commandButton>
 				</h:form>
 			</p:column>
 			<p:column>
 				<f:facet name="header">
-					<h:outputText value="Results" />
+					<h:outputText value="Results and console output" />
 				</f:facet>
-				
+				<h:outputText value="To-be design" />
+				<p:fieldset style="min-width:300px;min-height:400px;">
+					
+					<img id="image-tobe" src="./images/${editor.task_image}.png" />
+				</p:fieldset>
 				<!--  p:panel style="border: 1px solid #000000;" header="Result">-->
-				<p:tabView style="min-width:300px;min-height:300px;">
-					<p:tab title="Task_1">
-						<p:graphicImage value=".\images\image.jpeg" />
-					</p:tab>
-					<p:tab title="Task_2">
-						<p:graphicImage value=".\images\image.jpeg" />
-					</p:tab>
-				</p:tabView>
+				<h:outputText value="As-is design" />
+				<p:fieldset style="min-width:300px;min-height:400px;">		
+					<!-- <p:tabView style="min-width:300px;min-height:300px;">
+						<p:tab title="Task_1">
+							<img id="mainLogo" src=".\\images\\image.png" alt="fullPage" />
+						</p:tab>
+						<p:tab title="Task_2">
+							<img id="image-seq" src=".\\images\\image-seq.jpeg" alt="fullPage" />
+						</p:tab>
+					</p:tabView>
+					<img id="mainLogo" src=".\\images\\image.png" alt="fullPage" />-->
+					<img id="mainLogo" src="./images/${editor.asisImage}.png" alt="fullPage" />
+				</p:fieldset>
 				
-					
-
-					
+				<p:fieldset style="min-width:300px;min-height:200px;">						
+					<img id="console-output" src="./images/${editor.conOutput}.png" alt="fullPage" />
+				</p:fieldset>	
 	    		<!--</p:panel>-->
 			</p:column>
+					
 		</p:dataTable>
 	</p:layoutUnit>  
 </p:layout> 
@@ -97,40 +111,55 @@
 
 <script> 
 
-	var e1 = ace.edit("jsEditor_1");
-	e1.getSession().setMode("ace/mode/java");
-	e1.setTheme("ace/theme/eclipse");
-	e1.getSession().setTabSize(2);
-	e1.getValue();
+	//var e1 = ace.edit("jsEditor_1");
+	//e1.getSession().setMode("ace/mode/java");
+	//e1.setTheme("ace/theme/eclipse");
+	//e1.getSession().setTabSize(2);
+	//e1.getValue();
 	
-	var e = ace.edit("jsEditor");
-	e.getSession().setMode("ace/mode/java");
-	e.setTheme("ace/theme/eclipse");
-	e.getSession().setTabSize(2);
-	e.getSession().getScreenLength();
+	//var e_results_readOnly = ace.edit("results_readOnly");
+	//e_results_readOnly.getSession().setMode("ace/mode/java");
+	//e_results_readOnly.setTheme("ace/theme/eclipse");
+	//e_results_readOnly.getSession().setTabSize(2);
+	//e_results_readOnly.getValue();
+
+	//e_results_readOnly.container.classList.add("ace_editor_testResult");
+	//e_results_readOnly.setOptions({		
+	  //  readOnly: true,
+	    //highlightActiveLine: false,
+	    //highlightGutterLine: false
+	//});
+	
+	
+	//var e = ace.edit("jsEditor");
+	//e.getSession().setMode("ace/mode/java");
+	//e.setTheme("ace/theme/eclipse");
+	//e.getSession().setTabSize(2);
+	//e.getSession().getScreenLength();
 	
 	
 	
-	var eReadOnly = ace.edit("jsEditor_readOnly");
-	eReadOnly.getSession().setMode("ace/mode/java");
-	eReadOnly.setTheme("ace/theme/eclipse");
-	eReadOnly.container.classList.add("ace_editor_readOnly");
+	//var eReadOnly = ace.edit("jsEditor_readOnly");
+	//eReadOnly.getSession().setMode("ace/mode/java");
+	//eReadOnly.setTheme("ace/theme/eclipse");
+	//eReadOnly.container.classList.add("ace_editor_readOnly");
 	//eReadOnly.getSession().setTabSize(2);
-	eReadOnly.setOptions({		
+	
+	//eReadOnly.setOptions({		
 	    //readOnly: true,
-	    highlightActiveLine: false,
-	    highlightGutterLine: false
-	});
-	var ejsEditor_testResult = ace.edit("jsEditor_testResult");
-	ejsEditor_testResult.getSession().setMode("ace/mode/java");
-	ejsEditor_testResult.setTheme("ace/theme/eclipse");
-	ejsEditor_testResult.container.classList.add("ace_editor_testResult");
-	//eReadOnly.getSession().setTabSize(2);
-	ejsEditor_testResult.setOptions({		
+	  //  highlightActiveLine: false,
+	    //highlightGutterLine: false
+	//});
+	//var ejsEditor_testResult = ace.edit("jsEditor_testResult");
+	
+	//ejsEditor_testResult.getSession().setMode("ace/mode/java");
+	//ejsEditor_testResult.setTheme("ace/theme/eclipse");
+	//ejsEditor_testResult.container.classList.add("ace_editor_testResult");
+	//ejsEditor_testResult.setOptions({		
 	    //readOnly: true,
-	    highlightActiveLine: false,
-	    highlightGutterLine: false
-	});
+	   // highlightActiveLine: false,
+	   // highlightGutterLine: false
+	//});
 	
 	var input = $('input[name="komutdosyasi"]');
 	e.getSession().on("change", function () {
@@ -142,10 +171,19 @@
     	input_jsEditor_readOnly.val(eReadOnly.getSession().getValue());
 	});
     
+
+    
     var input_jsEditor_testResult = $('input[name="codeTest"]');
     ejsEditor_testResult.getSession().on("change", function () {
     	input_jsEditor_testResult.val(ejsEditor_testResult.getSession().getValue());
 	});
+    
+    
+    
+    //var codeTest = $('input[name="codeTest_1"]');
+    //ejsEditor_testResult.getSession().on("change", function () {
+    //	codeTest.val(ejsEditor_testResult.getSession().getValue());
+	//});
 
 	</script>
 
@@ -154,14 +192,21 @@
 // set rates codes for Booking Method = GroupRes Confirmation
 $(function(){
 	$('#jsEditor').blur(function() {
-		$('input[name=cheese]').val($('#jsEditor').val());
+		$('input[name=komutdosyasi]').val($('#jsEditor').val());
 	});
-	$('#jsEditor_readOnly').bind(function() {
+	$('#jsEditor_readOnly').blur(function() {
 		$('input[name=valueForTest]').val($('#jsEditor_readOnly').val());
 	});
 	$('#jsEditor_testResult').bind(function() {
 		$('input[name=codeTest]').val($('#jsEditor_testResult').val());
 	});
+	$('#hidden_1').bind(function() {
+		$('input[name=codeTest_1]').val($('#hidden_1').val());
+	});
+	$('#hello').blur(function() {
+		$('input[name=aftermath]').val($('#hello').val());
+	});
+
 
 });
 
@@ -174,6 +219,14 @@ $(function(){
 
 
 </script>
+
+<script>
+setInterval(function(){
+    $("#mainLogo").attr("src", "./images/${editor.asisImage}.png?"+new Date().getTime());
+    $("#console-output").attr("src", "./images/${editor.conOutput}.png?"+new Date().getTime());
+    $("#image-tobe").attr("src", "./images/${editor.task_image}.png?"+new Date().getTime());
+}, 2000)
+ </script>
 
 </h:body>
 </html>

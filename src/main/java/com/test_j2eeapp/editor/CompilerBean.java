@@ -1,5 +1,13 @@
 package com.test_j2eeapp.editor;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
@@ -71,25 +79,37 @@ public class CompilerBean {
 	
 
 	
-	public void generateGraph(String plantUmlMarkup) throws IOException{
+	public void generateGraph(String plantUmlMarkup, String name) throws IOException{
+		
 		
 	
 		
-		String test = "@startuml\n"+plantUmlMarkup+"\n@enduml";
-//		System.out.println(test);
-		SourceStringReader s = new net.sourceforge.plantuml.SourceStringReader(test);
-		FileOutputStream file = new FileOutputStream("C:\\Users\\u1dd_fsm\\Desktop\\eclipse-workspace\\j2eeappnew\\src\\main\\webapp\\images\\image.jpeg");
-//		FileOutputStream file = new FileOutputStream("C:\\Users\\u1dd_fsm\\Desktop\\eclipse-workspace\\j2eeappnew\\src\\main\\webapp\\WEB-INF\\images\\image.jpeg");
+		String plantText = "@startuml\n"+plantUmlMarkup+"\n@enduml";
+		SourceStringReader s = new net.sourceforge.plantuml.SourceStringReader(plantText);
+		FileOutputStream file = new FileOutputStream("C:\\Users\\u1dd_fsm\\Desktop\\eclipse-workspace\\j2eeappnew\\src\\main\\webapp\\images\\"+name+".png");
 		s.generateImage(file);
-//		System.out.println(System.getProperty("./"));
 		file.close();
 	}
-	public String deriveFullClassFromSource(String value) throws Exception {
+	public void generateSeg(String req, String resp) throws IOException{
+		
+		String request = req+" -> " + resp +": Authentication Request";
+		String responce = req+" <- " + resp +": Authentication Responce";
+		
+		String test = "@startuml\n"+request+"\n"+responce+"\n"+"\n@enduml";
+//		System.out.println(test);
+		SourceStringReader s = new net.sourceforge.plantuml.SourceStringReader(test);
+		FileOutputStream file = new FileOutputStream("C:\\Users\\u1dd_fsm\\Desktop\\eclipse-workspace\\j2eeappnew\\src\\main\\webapp\\images\\image-seq.jpeg");
+//		FileOutputStream file = new FileOutputStream("C:\\Users\\u1dd_fsm\\Desktop\\eclipse-workspace\\j2eeappnew\\src\\main\\webapp\\WEB-INF\\images\\image.jpeg");
+		s.generateImage(file);
+		file.close();
+	}
+	public Map<String, Integer> deriveFullClassFromSource(String value) throws Exception {
 
 		String result = "";
 		int fieldsLengthForTestResults = 0;
 		String classBuilder = "";
 		String new_value = "";
+		
 		String[] values = null;
 		StringBuilder valuesBuilder = new StringBuilder();
 		StringBuilder methodForValuesBuilder = new StringBuilder();
@@ -97,10 +117,12 @@ public class CompilerBean {
 		StringBuilder fieldsForValuesBuilderWithConstructor = new StringBuilder();
 		StringBuilder classForValuesBuilder = new StringBuilder();
 		Map<String, Class<?>> compiled = new HashMap<String, Class<?>>();
+		Map<String, Integer> map_values = new HashMap<String, Integer>();
 		Map<String, ArrayList> saver = new HashMap<String, ArrayList>();
 		InMemoryJavaCompiler test = InMemoryJavaCompiler.newInstance();		
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		ArrayList<Integer> testResults = new ArrayList<Integer>();
+		ArrayList<String> testNameResults = new ArrayList<String>();
 		List<String> matchList = new ArrayList<String>();
 		ArrayList<Integer> list_values = new ArrayList<Integer>();
 		ArrayList<Integer> list_index = new ArrayList<Integer>();
@@ -158,8 +180,14 @@ public class CompilerBean {
 			
 			list_values_temp.add((value.substring(list.get(ir), list.get(ir+1)).replace("ArrayList", "java.util.ArrayList")));
 			
+//			
+//			StringBuilder str = new StringBuilder(value.substring(list.get(ir), list.get(ir+1)));
+//			
+//			System.out.println(index_for_list);
+//			str.insert(408, "System.out.println(1);");
+//			System.out.println(value.substring(list.get(ir), list.get(ir+1)).replace("ArrayList", "java.util.ArrayList").replace("trace();", "System.out.println(1);"));
 			test.addSource(deriveFullClassNameFromSource(value.substring(list.get(ir), list.get(ir+1))), (value.substring(list.get(ir), list.get(ir+1)).replace("ArrayList", "java.util.ArrayList")));
-//			System.out.println(value.substring(list.get(ir), list.get(ir+1)));
+//			test.addSource(deriveFullClassNameFromSource(value.substring(list.get(ir), list.get(ir+1))), ((str.toString()).replace("ArrayList", "java.util.ArrayList")));
 //			String temp = value.substring(list.get(ir), list.get(ir+1));
 //			System.out.println(temp);
 //			System.out.println(temp.indexOf("="));
@@ -187,6 +215,7 @@ public class CompilerBean {
 		/////////////////////////
 		try {
 			compiled = test.compileAll();
+			
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -239,6 +268,7 @@ public class CompilerBean {
 					
 					listOfclassNamesForValues.add(listOfClass.get(ir));
 					methodForValuesBuilder.append(cleanClassMethod+"|");
+//					System.out.println(listOfClass.get(ir).getDeclaredMethods()[jr].getName());
 
 					if((listOfClass.get(ir).getDeclaredMethods()[jr].getName()).contains("Test")) {
 						
@@ -254,14 +284,36 @@ public class CompilerBean {
 //						System.out.println();
 						for (Method field : fields) {
 							  field.setAccessible(true); //Additional line
-							  testResults.add((int) field.invoke(listOfClass.get(ir).newInstance(), null));//						        
+
+							 map_values.put(field.getName(), (int) field.invoke(listOfClass.get(ir).newInstance(), null));
+							 testNameResults.add(listOfClass.get(ir).getDeclaredMethods()[jr].getName());
+							 testResults.add((int) field.invoke(listOfClass.get(ir).newInstance(), null));//						        
 						}
+	
 						
-//						Method setNameMethod_1 = listOfClass.get(ir).getDeclaredMethod("getNewBalanceTest");
-//						setNameMethod_1.setAccessible(true);						
-//						Integer x1 = (int) setNameMethod_1.invoke(listOfClass.get(ir).newInstance(), null);
-//						result1 = x1.toString();
-//						System.out.println(result1+"result1");
+						
+					}
+					if((listOfClass.get(ir).getDeclaredMethods()[jr].getName()).contains("trace_method")) {
+						
+						Method setNameMethod = listOfClass.get(ir).getDeclaredMethod("trace_method");
+						setNameMethod.setAccessible(true);						
+						String x = (String) setNameMethod.invoke(listOfClass.get(ir).newInstance(), null);
+//						result = x.toString();
+						
+						System.out.println(x);
+						
+//						Method[] fields = listOfClass.get(ir).getDeclaredMethods();
+//						fieldsLengthForTestResults = fields.length;
+//						System.out.println();
+//						for (Method field : fields) {
+//							  field.setAccessible(true); //Additional line
+//
+//							 map_values.put(field.getName(), (int) field.invoke(listOfClass.get(ir).newInstance(), null));
+//							 testNameResults.add(listOfClass.get(ir).getDeclaredMethods()[jr].getName());
+//							 testResults.add((int) field.invoke(listOfClass.get(ir).newInstance(), null));//						        
+//						}
+	
+						
 						
 					}
 					
@@ -450,7 +502,7 @@ public class CompilerBean {
 //		    }
 		
 		
-		System.out.println(valuesBuilder);
+//		System.out.println(valuesBuilder);
 		
 		values = valuesBuilder.toString().split(";");
 		
@@ -529,11 +581,11 @@ public class CompilerBean {
 //						System.out.println((list_values_temp.get(k)).replaceAll("\n\r", "")+"----"+((values[i]+";").trim()));
 						
 						if((list_values_temp.get(k)).contains((values[i]+";").trim())) {
-							System.out.println(values[i]);
+//							System.out.println(values[i]);
 //							classBuilder += ((list_values_temp.get(k).substring(0,list_values_temp.get(k).indexOf("{")).replace("public class ", "").replace("extends ", "")+" ..> "+(listOfClass.get(j).getSimpleName())))+"\n";
 							if(list_extensions.size() > 0) {
-								for(int m = 0; m <= list_extensions.size()/2; m++) {
-									
+								for(int m = 0; m <= list_extensions.size()/(list_extensions.size() + 1); m++) {
+									System.out.println(list_extensions);
 									classBuilder += ((list_values_temp.get(k).substring(0,list_values_temp.get(k).indexOf("{")).replace("public class ", "").replace("extends "+list_extensions.get(m), "")+" ..> "+(listOfClass.get(j).getSimpleName())))+"\n";
 								}
 							}else {
@@ -591,16 +643,19 @@ public class CompilerBean {
 //			System.out.println(testResults.size());
 			
 //		if() {
-			for(int i = 0; i < (testResults.size()/fieldsLengthForTestResults); i++) {
-//			System.out.println();
-				result += testResults.get(i)+";";
-			}
+		
+//			for(int i = 0; i < (testResults.size()/fieldsLengthForTestResults); i++) {
+////				System.out.println(testResults.get(i));
+////				map_values.put(testNameResults.get(i), testResults.get(i));
+//				result += testResults.get(i)+";";
+//			}
 //		}
-
+//			System.out.println(testResults);
+//			System.out.println(map_values);
 		System.out.println(classBuilder);
 
-		generateGraph(classBuilder);
-		return result;
+		generateGraph(classBuilder, "image");
+		return map_values;
 	}
 	/**
 	 * @return e.g. "com.dreamspacepresident.TestClass" if the source's first root level "class" (I'm talking about {}
@@ -664,4 +719,40 @@ public class CompilerBean {
 	    }
 	    return -1;
 	}
+	public BufferedImage convertTextToGraphic(String text, Font font) {
+		
+
+        BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = img.createGraphics();
+
+        g2d.setFont(font);
+        FontMetrics fm = g2d.getFontMetrics();
+        int width = 600;
+        int height = 200;
+        g2d.dispose();
+
+        img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        
+        g2d = img.createGraphics();
+//        g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+//        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//        g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+//        g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+//        g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+//        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+//        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+//        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+        g2d.setFont(font);
+        fm = g2d.getFontMetrics();
+        g2d.setColor(Color.BLACK);
+//        g2d.drawString(text, 0, fm.getAscent());
+        FontRenderContext frc = g2d.getFontRenderContext();
+        TextLayout layout = new TextLayout(text, font, frc);
+        String [] lines = text.split("\n");
+        for(int i=0; i<lines.length; i++){
+        	g2d.drawString(lines[i], 15,(int) (15+i*layout.getBounds().getHeight()+0.5));
+           }
+        g2d.dispose();
+        return img;
+    }
 }
